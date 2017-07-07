@@ -1,0 +1,29 @@
+<%= form_for(@leave_date) do |f| %>
+  <% if @leave_date.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@leave_date.errors.count, "error") %> prohibited this leave_date from being saved:</h2>
+
+      <ul>
+      <% @leave_date.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :leave_date %><br>
+    <%= f.date_select :leave_date %>
+  </div>
+  <div class="field">
+    <%= f.label :leave_type %><br>
+    <%= f.text_field :leave_type %>
+  </div>
+  <div class="field">
+    <%= f.label :leave_id %><br>
+    <%= f.number_field :leave_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

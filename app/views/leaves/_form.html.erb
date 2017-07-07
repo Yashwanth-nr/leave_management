@@ -1,0 +1,58 @@
+<%= form_for(@leafe) do |f| %>
+  <% if @leafe.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@leafe.errors.count, "error") %> prohibited this leafe from being saved:</h2>
+
+      <ul>
+      <% @leafe.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+   
+    <%= f.hidden_field :user_id,value: current_user.id %>
+  </div>
+  
+  <div class="field" >
+    <%= f.label :start_date %><br>
+    <%= f.text_field :start_date ,id:"from" %>
+  </div>
+  <div class="field" >
+    <%= f.label :end_date %><br>
+    <%= f.text_field :end_date ,id:"to" %>
+  </div>
+  <div id = "leaveDates">
+  </div>
+  
+  <div class="field">
+    <% if current_user.is_admin? %>
+    <%= f.hidden_field :approved, value: true %>
+    <%end %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<script>
+  $( function() {
+    $( "#leave_start_date" ).datepicker({
+      dateFormat: 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true,
+      minDate: 0,
+      showAnim: "slideDown"
+    });
+     $( "#leave_end_date" ).datepicker({
+      dateFormat: 'yy-mm-dd',
+      changeMonth: true,
+      changeYear: true,
+      minDate: 0,
+      showAnim: "slideDown"
+     });
+
+  } );
+  </script>

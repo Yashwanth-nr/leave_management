@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Datepicker</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <%= csrf_meta_tags %>
+  <script>
+  $(document).ready(
+      function() {
+    var dateFormat = "mm/dd/yy",
+      from = $( "#from" )
+        .datepicker({
+          defaultDate: "+1w",
+          dateFormat: 'yy-mm-dd',
+          changeMonth: true,
+          numberOfMonths: 1
+        })
+        .on( "change", function() {
+          to.datepicker( "option", "minDate", getDate( this ) );
+        }),
+      to = $( "#to" ).datepicker({
+        defaultDate: "+1w",
+        dateFormat: 'yy-mm-dd',
+        changeMonth: true,
+        numberOfMonths: 2
+      })
+      .on( "change", function() {
+        from.datepicker( "option", "maxDate", getDate( this ) );
+      })
+      .on("change", function(){
+
+        var startFullDate = new Date(document.getElementById('from').value);
+        var endFullDate = new Date(document.getElementById('to').value);
+        var outputHandle = document.getElementById('leaveDates');
+
+        var startDate = startFullDate.getDate();
+        var endDate = endFullDate.getDate();
+        var allDates = [];
+
+        var output = "<h2>Select Dates</h2>";
+        // used to increment the nested form attributes 
+
+        var dayCounter = 0;
+        
+        while(startDate <= endDate){
+          var calDate = new Date(startFullDate.setDate(startDate));
+          if (calDate.getDay() != 0){
+            // each date as a hidden field
+            var newLeaveDate = document.createElement('input');
+            newLeaveDate.setAttribute("name","leave[leave_dates_attributes][" + dayCounter + "][leave_date]");
+            newLeaveDate.setAttribute("type", "hidden");
+            newLeaveDate.setAttribute("value", calDate.getFullYear() + "-" + (calDate.getMonth() + 1 ) + "-" + calDate.getDate());
+
+            var newLeaveDateHalf = document.createElement('input');
+            newLeaveDateHalf.setAttribute("name","leave[leave_dates_attributes][" + dayCounter + "][leave_type]");
+            newLeaveDateHalf.setAttribute("type", "radio");
+            newLeaveDateHalf.setAttribute("value", "half");
+
+            var newLeaveDateFull = document.createElement('input');
+            newLeaveDateFull.setAttribute("name","leave[leave_dates_attributes][" + dayCounter + "][leave_type]");
+            newLeaveDateFull.setAttribute("type", "radio");
+            newLeaveDateFull.setAttribute("value", "full");
+
+            // outerhtml is used because the new element created was displaying as an HTML object on the page, but not as raw html
+            var newLeaveTypeInput = newLeaveDateHalf.outerHTML + "half" +" " + newLeaveDateFull.outerHTML + "full";
+              output += calDate;
+              output += newLeaveDate.outerHTML;
+              output += newLeaveTypeInput;
+              output += "<br/>";
+              dayCounter++;
+          }
+          startDate++;
+        }
+        outputHandle.innerHTML = output;
+      });
+
+    function getDate( element ) {
+      var date;
+      try {
+        date = $.datepicker.parseDate( dateFormat, element.value );
+      } catch( error ) {
+        date = null;
+      }
+      return date;
+    }
+  });
+
+  </script>
+</head>
+<body>
+       <p class="notice"><%= notice %></p>
+       <p class="alert"><%= alert %></p>
+
+       <% if user_signed_in? %>
+
+	welcome <%= current_user.email %>
+
+	
+	<%= link_to "Account Settings", edit_user_registration_path %>
+	
+	<%= link_to "Logout", destroy_user_session_path, method: :delete %>
+
+<%else%>
+
+	<%= link_to "Register", new_user_registration_path %>
+
+	<%= link_to "Login", new_user_session_path %>
+
+<%end%>
+
+<%= yield %>
+
+</body>
+</html>
